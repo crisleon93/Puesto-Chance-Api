@@ -14,6 +14,30 @@ function permutaciones(numero) {
   return resultado;
 }
 
+/**
+ * Valida y normaliza una apuesta de chance antes de guardarla en el tiquete.
+ *
+ * Reglas de validación:
+ * - `numero`: string de 1 a 4 dígitos numéricos.
+ * - `modalidad`: `'DIRECTO'` (por defecto) o `'COMBINADO'`.
+ * - `COMBINADO` solo aplica para 3 o 4 cifras y el número no puede tener
+ *   todas sus cifras iguales (pues solo habría 1 permutación).
+ * - `valor`: entero entre `APUESTA_MIN_CHANCE` y `APUESTA_MAX_CHANCE`,
+ *   y debe ser múltiplo de 100.
+ *
+ * @param {{ numero: string, modalidad?: string, valor: number }} apuesta
+ *   Objeto de apuesta enviado por el cliente.
+ * @returns {{ numero: string, cifras: number, modalidad: string, valor: number }}
+ *   Apuesta normalizada con el campo `cifras` calculado.
+ * @throws {AppError} 400 en cualquier violación de las reglas anteriores.
+ *
+ * @example
+ * validarApuesta({ numero: '1234', modalidad: 'DIRECTO', valor: 2000 });
+ * // { numero: '1234', cifras: 4, modalidad: 'DIRECTO', valor: 2000 }
+ *
+ * validarApuesta({ numero: '123', modalidad: 'COMBINADO', valor: 600 });
+ * // { numero: '123', cifras: 3, modalidad: 'COMBINADO', valor: 600 }
+ */
 function validarApuesta(apuesta) {
   const { numero, modalidad = 'DIRECTO', valor } = apuesta || {};
 

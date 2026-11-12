@@ -2,6 +2,33 @@ const { getDb, nextId } = require('../data/store');
 const AppError = require('../utils/AppError');
 const { fechaLocal } = require('../utils/fechas');
 
+/**
+ * Genera el resumen financiero de la caja para un vendedor en una fecha específica.
+ *
+ * Calcula:
+ * - Total de tiquetes vendidos y anulados del día.
+ * - Desglose de ventas por tipo (Chance / Baloto).
+ * - Total de premios pagados.
+ * - Saldo esperado en caja: `totalVendido - totalPagado`.
+ * - Si la caja ya fue cerrada ese día.
+ *
+ * @param {number} vendedorId   - ID del usuario vendedor.
+ * @param {string} [fecha]      - Fecha en formato `YYYY-MM-DD`. Si se omite, usa la fecha actual
+ *                                en la zona horaria configurada (`ZONA_HORARIA`).
+ * @returns {{
+ *   vendedorId: number,
+ *   fecha: string,
+ *   tiquetesVendidos: number,
+ *   tiquetesAnulados: number,
+ *   ventasChance: number,
+ *   ventasBaloto: number,
+ *   totalVendido: number,
+ *   premiosPagados: number,
+ *   totalPagado: number,
+ *   saldoEsperado: number,
+ *   cerrada: boolean
+ * }} Objeto con el resumen completo de la caja.
+ */
 function resumen(vendedorId, fecha = fechaLocal()) {
   const db = getDb();
   const delDia = (iso) => fechaLocal(iso) === fecha;
